@@ -1,0 +1,144 @@
+﻿<html>
+<head>
+	<title></title>
+	<style>
+		#sambar{
+			width:550px;
+			height:452px;
+			background-color:#eef;
+			border:1px solid silver;
+			color:rgba(0,0,0,.7);
+			overflow:hidden;
+			padding:0px;
+		}
+		#toolbar{
+			margin:0px;
+			position:relative;
+			width:30px;
+			height:440px;
+			border:1px solid silver;
+			top:5px;
+			left:5px;
+			float:left;
+		}
+		#toolbar .button{
+			background-color:#ccf;
+			border:none;
+			padding:1px;
+			margin:0px;
+			display:block;
+			width:30px;
+			height:30px;
+			overflow:hidden;
+		}
+		#toolbar .button:hover{
+			background-color:#aaf;
+			border:none;
+			border-right:1px solid grey;
+			border-bottom:1px solid grey;
+			display:block;
+		}
+		#toolbar .button:active{
+			background-color:#aaf;
+			border:none;
+			border-top:1px solid grey;
+			border-left:1px solid grey;
+			display:block;
+		}
+		#talbar{
+			margin:0px;
+			position:relative;
+			width:500px;
+			height:440px;
+			border:1px solid black;
+			right:5px;
+			top: 5px;
+			float:right;
+		}
+		.textf{
+			background-color:#fff;
+			border:1px solid grey;
+			position:relative;
+			width:0px;
+		}
+	</style>
+</head>
+<body>
+	<div id="sambar">
+		<div id="toolbar">
+			<input class="button" type="button" value="arro"/>
+			<input class="button" type="button" value="text"/>
+		</div>
+		<div id="talbar">
+		</div>
+	</div>
+	<script src="js/greensock-v12-js/rdy/TweenMax.min.js"></script>
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script>
+		var sum = "auto";
+		var bagaj = "sum";
+		
+		var too = 0;
+		var obs;
+		
+		$(window).load(
+			
+			function(){
+				$.each($("#toolbar>input"), function(key, value){
+					switch($(value).attr("value")){
+						case "arro": {
+								$(value).click(function(){
+									sum = "auto";
+									bagaj = "sum";
+								});
+							}break;
+						case "text": {
+								$(value).click(function(){
+									sum = "text";
+									bagaj = "bichdeg";
+								});
+							}break;
+					}
+				})
+				
+				$("#talbar").mouseenter(function(){
+					$("#talbar").css("cursor", sum);
+				}).mouseleave(function(){
+					$("#talbar").css("cursor", "auto");
+				});
+				
+				$("#talbar").on("click", function(d){
+					
+					var talbar = $("#talbar");
+					var x = d.pageX - talbar.offset().left;
+					var y = d.pageY - talbar.offset().top;
+					
+					switch(bagaj){
+						case "bichdeg":{
+									too++;
+									$.data(talbar, "obj"+too, {type:"text", x:x, y:y});
+									console.log($.data(talbar, "obj"+too).type);
+									console.log($.data(talbar, "obj"+too).x);
+									console.log($.data(talbar, "obj"+too).y);
+									var field = "<span type='text' class='textf "+"obj"+too+"' style='top:"+y+"; left:"+x+";'></span>";
+									talbar.append(field);
+									
+							}break;
+						case "sum":{
+							
+							}break;
+					}
+//					console.log("x="+x);
+//					console.log("y="+y);
+//					console.log($("#talbar").offset().left);
+				});
+				
+			}
+		);
+		
+		function TextField(){
+			this.id = "dopjdke323dsfds3"+1;
+		}
+	</script>
+</body>
+</html>
