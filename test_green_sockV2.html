@@ -1,0 +1,229 @@
+﻿<html>
+<head>
+	<title></title>
+	<style>
+		#sambar{
+			width:550px;
+			height:452px;
+			background-color:#eef;
+			border:1px solid silver;
+			color:rgba(0,0,0,.7);
+			overflow:hidden;
+			padding:0px;
+		}
+		#bagaaj{
+			margin:0px;
+			position:relative;
+			width:30px;
+			height:440px;
+			border:1px solid silver;
+			top:5px;
+			left:5px;
+			float:left;
+		}
+		#bagaaj .button{
+			background-color:#ccf;
+			border:none;
+			padding:1px;
+			margin:0px;
+			display:block;
+			width:30px;
+			height:30px;
+			overflow:hidden;
+		}
+		#toolbar .button:hover{
+			background-color:#aaf;
+			border:none;
+			border-right:1px solid grey;
+			border-bottom:1px solid grey;
+			display:block;
+		}
+		#bagaaj .button:active{
+			background-color:#aaf;
+			border:none;
+			border-top:1px solid grey;
+			border-left:1px solid grey;
+			display:block;
+		}
+		#talbar{
+			margin:0px;
+			position:relative;
+			width:500px;
+			height:440px;
+			border:1px solid black;
+			right:5px;
+			top: 5px;
+			float:right;
+		}
+		.textf{
+			background-color:#fff;
+			border:1px solid grey;
+			position:relative;
+			width:0px;
+		}
+		.textfield{
+			background-color:#transparent;
+			border:1px solid grey;
+			position:absolute;
+			display:inline-block;
+			width:60px;
+			height:1em;
+		}
+	</style>
+</head>
+<body>
+	<div id="sambar">
+		<div id="bagaaj">
+			<input class="button" type="button" value="arro"/>
+			<input class="button" type="button" value="text"/>
+		</div>
+		<div id="talbar">
+		</div>
+	</div>
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/greensock-v12-js/rdy/TweenMax.min.js"></script>
+	<script>
+		$(window).load(ehel);
+		
+		var _globals, thistool;
+		
+		function Bagaaj(id){
+			this.bagajnuud = [];
+			this.id = id;
+			this.achaal = function(){
+				var a = "#"+this.id+">input[value='";
+				$.each(this.bagajnuud,function(k,v){
+					//console.log(a+v.value+"']");
+					$(a+v.value+"']").bind("click",function(){
+						v.func.call();
+					});
+				});
+			};
+			this.bagajNem = function(a,b){
+				this.bagajnuud.push({value: a, func: b});
+			};
+		}
+		
+		function ehel(){
+			var bagaj, talbar, ismdown, toolid=0;
+			var bagaaj = new Bagaaj("bagaaj");
+			talbar = $("#talbar");
+			talbar.bind("mouseleave", function(){
+				$("body").css({cursor:'auto'});
+			});
+			talbar.bind("mousedown", function(e){
+				ismdown = true;
+				console.log(e.pageX, e.pageY);
+				return false;
+			});
+			talbar.bind("mouseup", function(e){
+				ismdown = false;
+				e.preventDefault();
+				//console.log(e.pageX, e.pageY);
+			});
+			$("body").bind("keyup" ,tovchDarah);
+			
+			bagaaj.bagajNem("arro", function(a){
+				bagaj = "arrow";
+				talbar.bind("mouseenter", function(){
+					$("body").css({cursor:'auto'});
+				});
+				talbar.unbind("mousedown", bichih);
+				thistool = "sum";
+			});
+			bagaaj.bagajNem("text", function(){
+				bagaj = "text";
+				talbar.bind("mouseenter", function(){
+					$("body").css({cursor:'text'});
+				});
+				talbar.bind("mousedown", bichih);
+			});
+			
+			// Bagaj heregsliig todorhoilj baina
+			// OOP style
+			function Tool(){
+				this.prefix = undefined;
+				this.id = 0;
+				this.x = 0;
+				this.y = 0;
+				this.setId = function(id){
+					this.id = id;
+				};
+				this.getId = function(){
+					return this.prefix + this.id;
+				};
+				this.setxy = function(x,y){
+					this.x = x;
+					this.y = y;
+				}
+				this.setprefix = function(s){
+					this.prefix = s;
+				}
+				// yamar neg dom elemented ene bagajiinhaa baidlyg hevlene;
+				// @parent - jquery obj
+				this.addOnScreen = function(parent){
+					var txt = "<span class='textfield' id='"+this.prefix+this.id+"' style='top:"+this.y+"; left:"+this.x+";'></span>";
+					parent.append(txt);
+				}
+				this.toString = function(){
+					return "<span class='textfield' id='"+this.prefix+this.id+"' style='top:"+this.y+"; left:"+this.x+";'></span>";
+				}
+				this.getId = function(){
+					return this.prefix+this.id;
+				}
+			}
+			
+			function bichih(e){
+				var xx = e.pageX-talbar.offset().left, yy = e.pageY-talbar.offset().top-9;
+				var newtool = new Tool();
+				newtool.setxy(xx, yy);
+				newtool.setprefix("text");
+				newtool.setId(toolid);
+				newtool.addOnScreen(talbar);
+				console.log(newtool.toString());
+				console.log(newtool.getId());
+				zaaguur.show(xx+1,yy-2);
+				$("#"+newtool.getId()).bind("click", function(){
+					if(thistool == "sum"){
+						thistool = "text"+toolid;
+						console.log("SUM>>>text"+toolid);
+					}
+				});
+				thistool = newtool.getId();
+				toolid++;
+			}
+			
+			function tovchDarah(e){
+				if(thistool)
+					console.log(":"+thistool);
+				console.log("@"+e.keyCode);
+			}
+			
+			// Zaaguur
+			// OOP - Singleton style
+			// "zaaguur" gesen global huvisagch avch ashiglana
+			function Zaaguur(){
+				var txt = "<div id='zaaguur' style='display:none; position:absolute; cursor:move; display:inline-block; opacity:0;'>|</div>";
+				var baigaa = 0;
+				this.show = function(x,y){
+					if(!baigaa)
+					{
+						talbar.append(txt);
+						$('#zaaguur').css('left',x).css('top', y);
+						TweenMax.to($('#zaaguur'), .3, {opacity:'1', repeat:-1, yoyo:true, repeatDelay:0.2});
+						baigaa = 1;
+					}else{
+						$('#zaaguur').css('left',x).css('top', y);
+					}
+				};
+				this.hide = function(){
+					$('#zaaguur').remove();
+					baigaa = 0;
+				};
+			}
+			zaaguur = new Zaaguur();
+			bagaaj.achaal();
+		}
+	</script>
+</body>
+</html>
