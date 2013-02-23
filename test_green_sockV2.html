@@ -69,6 +69,10 @@
 			width:60px;
 			height:1em;
 		}
+		#todruulagch{
+			background-color: transparent;
+			border:1px solid red;
+		}
 	</style>
 </head>
 <body>
@@ -107,6 +111,7 @@
 		function ehel(){
 			var bagaj, talbar, ismdown, toolid=0;
 			var bagaaj = new Bagaaj("bagaaj");
+			thistool = "sum";
 			talbar = $("#talbar");
 			talbar.bind("mouseleave", function(){
 				$("body").css({cursor:'auto'});
@@ -156,6 +161,12 @@
 					this.x = x;
 					this.y = y;
 				}
+				this.getx = function(){
+					return this.x;
+				}
+				this.gety = function(){
+					return this.y;
+				}
 				this.setprefix = function(s){
 					this.prefix = s;
 				}
@@ -182,11 +193,17 @@
 				newtool.addOnScreen(talbar);
 				console.log(newtool.toString());
 				console.log(newtool.getId());
-				zaaguur.show(xx+1,yy-2);
-				$("#"+newtool.getId()).bind("click", function(){
+				zaaguur.show(xx+2,yy-2);
+				$("#"+newtool.getId()).bind("click", {tool: newtool} ,function(e){
 					if(thistool == "sum"){
-						thistool = "text"+toolid;
-						console.log("SUM>>>text"+toolid);
+						var x = e.data.tool.getx()-1;
+						var y = e.data.tool.gety()-1;
+						var o = $("#"+e.data.tool.getId()).css('height');
+						var u = $("#"+e.data.tool.getId()).css('width');
+						console.log("SUM->"+e.data.tool.getId());
+						thistool = e.data.tool.getId();
+						todruulagch.show(x,y,parseInt(u)+1,parseInt(o)+1);
+						zaaguur.show(x+2,y-2);
 					}
 				});
 				thistool = newtool.getId();
@@ -203,7 +220,7 @@
 			// OOP - Singleton style
 			// "zaaguur" gesen global huvisagch avch ashiglana
 			function Zaaguur(){
-				var txt = "<div id='zaaguur' style='display:none; position:absolute; cursor:move; display:inline-block; opacity:0;'>|</div>";
+				var txt = "<div id='zaaguur' style='display:none; position:absolute; cursor:auto; display:inline-block; opacity:0;'>|</div>";
 				var baigaa = 0;
 				this.show = function(x,y){
 					if(!baigaa)
@@ -221,7 +238,32 @@
 					baigaa = 0;
 				};
 			}
+			
 			zaaguur = new Zaaguur();
+			
+			// Todruulagch
+			// OOP - Singleton style
+			// "todruulagch" gesen gants nereer handah heregtei
+			function Todruulagch(){
+				var baigaa = 0;
+				var txt = "<div id='todruulagch' style='display:none; position:absolute; cursor:auto; display:inline-block;'></div>";
+				// x ,y tseg deerees
+				// u - urt, o-ondor hemjeetei zurna;
+				this.show = function(x,y,u,o){
+					if(!baigaa){
+						$('#todruulagch').css('left',x).css('top', y).css('width',u).css('height',o);
+						talbar.append(txt);
+						baigaa = 1;
+					}else{
+						$('#todruulagch').css('left',x).css('top', y).css('width',u).css('height',o);
+					}
+				}
+				this.hide = function(){
+					$('#todruulagch').remove();
+					baigaa = 0;
+				}
+			}
+			todruulagch = new Todruulagch();
 			bagaaj.achaal();
 		}
 	</script>
